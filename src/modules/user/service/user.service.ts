@@ -13,4 +13,9 @@ export class userService {
     const userModel = new this.UserModel(userdata);
     return userModel.save();
   }
+
+  async existOrNot(mobileNumber: string): Promise<boolean> {
+    const result: object[] = await this.UserModel.find({ mobileNumber });
+    return !!result.length;
+  }
 }
