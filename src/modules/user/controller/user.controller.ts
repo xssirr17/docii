@@ -14,7 +14,7 @@ export class userController {
 
   @Post('register')
   @UsePipes(new ValidationPipe())
-  register(@Body() registerInputs: registerDto) {
-    return registerInputs;
+  async register(@Body() registerInputs: registerDto) {
+    return await this.userService.create(registerInputs);
   }
 }

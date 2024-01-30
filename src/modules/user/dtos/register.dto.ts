@@ -3,7 +3,7 @@ import { IsNotEmpty, Length, MinLength, Matches } from 'class-validator';
 export class registerDto {
   @IsNotEmpty()
   @Length(11)
-  mobilePhoneNumber: string;
+  mobileNumber: string;
   @IsNotEmpty()
   firstName: string;
   @IsNotEmpty()
