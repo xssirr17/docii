@@ -21,7 +21,7 @@ export class userController {
     @Body() registerInputs: registerDto,
     @Res() response: Response,
   ) {
-    try {
+    try {      
       const existOrNot: boolean = await this.userService.existOrNot(
         registerInputs.mobileNumber,
       );
