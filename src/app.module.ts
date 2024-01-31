@@ -4,9 +4,10 @@ import { MongoModule } from './databases/mongo/mongo.module';
 import { UserModule } from './modules/user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { SmsModule } from './modules/sms/sms.module';
+import { OtpModule } from './modules/otp/otp.module';
 
 @Module({
-  imports: [AuthModule, MongoModule, UserModule, ConfigModule.forRoot(), SmsModule],
+  imports: [AuthModule, MongoModule, UserModule, ConfigModule.forRoot(), SmsModule, OtpModule],
   controllers: [],
   providers: [],
 })
