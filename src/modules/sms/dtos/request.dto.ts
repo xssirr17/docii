@@ -5,5 +5,5 @@ export class RequestConfigDto {
   method: string;
   @IsNotEmpty()
   url: string;
-  data: string;
+  data: object;
 }

@@ -6,10 +6,12 @@ import errors from 'src/constants/errors';
 
 @Injectable()
 export class SmsService {
-  constructor(
-    private from: string = process.env.SMS_NUMBER,
-    private url: string = process.env.SMS_URL,
-  ) {}
+  private from: string;
+  private url: string;
+  constructor() {
+    this.from = process.env.SMS_NUMBER;
+    this.url = process.env.SMS_URL;
+  }
   async send(to: string, text: string) {
     const smsConfig: sendSmsDto = {
       from: this.from,
@@ -19,11 +21,11 @@ export class SmsService {
     const config: RequestConfigDto = {
       method: 'post',
       url: this.url,
-      data: JSON.stringify(smsConfig),
+      data: smsConfig,
     };
     try {
       return await axios(config);
-    } catch {
+    } catch (err) {
       throw errors.sendSmsError;
     }
   }
