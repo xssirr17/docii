@@ -12,7 +12,7 @@ export class otpService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private smsService: SmsService,
   ) {
-    this.expireTime = 2 * 60;
+    this.expireTime = 2 * 60 * 1000;
   }
 
   async send(mobileNumber) {
@@ -27,8 +27,10 @@ export class otpService {
         secret: secret.base32,
         encoding: 'base32',
       });
-      await this.smsService.send(mobileNumber, code);
-      await this.cacheManager.set(cacheOtpKey, code);
+      await Promise.all([
+        this.smsService.send(mobileNumber, code),
+        this.cacheManager.set(cacheOtpKey, code, this.expireTime),
+      ]);
     } catch (err) {
       throw err;
     }
