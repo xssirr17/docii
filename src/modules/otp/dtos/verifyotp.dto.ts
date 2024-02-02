@@ -3,7 +3,7 @@ import { IsNotEmpty, Length } from 'class-validator';
 export class verifyOtp {
   @IsNotEmpty()
   @Length(6)
-  otp: number;
+  otp: string;
 
   @IsNotEmpty()
   @Length(11)

@@ -24,6 +24,7 @@ export class otpController {
       await this.otpService.send(inputData.mobileNumber);
       res.status(response.otpSent.statusCode).send(response.otpSent);
     } catch (err) {
+      console.log(err);
       const error: ErrorsDto = err?.code ? err : errors.internalError;
       res.status(error.statusCode).send(error);
     }
@@ -36,6 +37,7 @@ export class otpController {
       await this.otpService.verify(inputData.mobileNumber, inputData.otp);
       res.status(response.otpVerified.statusCode).send(response.otpVerified);
     } catch (err) {
+      console.log(err);
       const error: ErrorsDto = err?.code ? err : errors.internalError;
       res.status(error.statusCode).send(error);
     }

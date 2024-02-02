@@ -35,11 +35,11 @@ export class otpService {
       throw err;
     }
   }
-  async verify(mobileNumber: string, otp: number) {
+  async verify(mobileNumber: string, otp: string) {
     const cacheOtpKey: string = `otp_${mobileNumber}`;
     const activeOtp: string = await this.cacheManager.get(cacheOtpKey);
     if (activeOtp) {
-      if (+activeOtp === otp) {
+      if (activeOtp === otp) {
         return;
       } else {
         throw errors.wrongOtp;
