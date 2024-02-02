@@ -24,4 +24,19 @@ export default {
     message: 'otp Alredy Sent or mobile number has active otp.please wait.',
     statusCode: 400,
   },
+  wrongOtp: {
+    code: 'wrongOtp',
+    message: 'otp not verified',
+    statusCode: 401,
+  },
+  internalError: {
+    code: 'internalError',
+    message: 'internal server error',
+    statusCode: 500,
+  },
+  otpExpired: {
+    code: 'otpExpired',
+    message: 'otp expired try to send another',
+    statusCode: 404,
+  },
 };

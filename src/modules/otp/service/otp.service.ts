@@ -15,7 +15,7 @@ export class otpService {
     this.expireTime = 2 * 60 * 1000;
   }
 
-  async send(mobileNumber) {
+  async send(mobileNumber: string) {
     try {
       const cacheOtpKey: string = `otp_${mobileNumber}`;
       const activeOtp: string = await this.cacheManager.get(cacheOtpKey);
@@ -33,6 +33,19 @@ export class otpService {
       ]);
     } catch (err) {
       throw err;
+    }
+  }
+  async verify(mobileNumber: string, otp: number) {
+    const cacheOtpKey: string = `otp_${mobileNumber}`;
+    const activeOtp: string = await this.cacheManager.get(cacheOtpKey);
+    if (activeOtp) {
+      if (+activeOtp === otp) {
+        return;
+      } else {
+        throw errors.wrongOtp;
+      }
+    } else {
+      throw errors.otpExpired;
     }
   }
 }

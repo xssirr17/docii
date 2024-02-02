@@ -12,6 +12,7 @@ import { Response } from 'express';
 import response from 'src/constants/response';
 import errors from 'src/constants/errors';
 import { ErrorsDto } from 'src/dtos/errors.dto';
+import { verifyOtp } from '../dtos/verifyotp.dto';
 
 @Controller('otp')
 export class otpController {
@@ -23,11 +24,20 @@ export class otpController {
       await this.otpService.send(inputData.mobileNumber);
       res.status(response.otpSent.statusCode).send(response.otpSent);
     } catch (err) {
-      const error: ErrorsDto = err?.code ? err : errors.sendOtpfailed;
+      const error: ErrorsDto = err?.code ? err : errors.internalError;
       res.status(error.statusCode).send(error);
     }
   }
 
   @Post('verify')
-  async verifyOtp() {}
+  @UsePipes(new ValidationPipe())
+  async verifyOtp(@Body() inputData: verifyOtp, @Res() res: Response) {
+    try {
+      await this.otpService.verify(inputData.mobileNumber, inputData.otp);
+      res.status(response.otpVerified.statusCode).send(response.otpVerified);
+    } catch (err) {
+      const error: ErrorsDto = err?.code ? err : errors.internalError;
+      res.status(error.statusCode).send(error);
+    }
+  }
 }
