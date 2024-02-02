@@ -5,9 +5,28 @@ services :
       ports : 
         - "8000:3000"
       depends_on : 
-        - "redis"
-        - "mongodb"
+        - mongodb
+      environment:
+        - DATABASE_URI=mongodb://admin:admin123456@62.133.61.25:27017/docii
+
     redis : 
       image : redis:latest
     mongodb : 
       image : mongo
+      ports:
+        - 27017:27017
+      environment:
+        - MONGO_INITDB_ROOT_USERNAME=admin
+        - MONGO_INITDB_ROOT_PASSWORD=admin123456
+
+    mongo-express:
+        image: mongo-express
+        restart: always
+        ports:
+        - 8081:8081
+        environment:
+        - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+        - ME_CONFIG_MONGODB_ADMINPASSWORD=admin123456
+        - ME_CONFIG_MONGODB_SERVER=mongodb
+        depends_on:
+        - "mongodb"
