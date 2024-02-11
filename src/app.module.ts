@@ -7,6 +7,7 @@ import { SmsModule } from './modules/sms/sms.module';
 import { OtpModule } from './modules/otp/otp.module';
 import { RedisModule } from './databases/redis/redis.module';
 import { AccessControlMiddleware } from './middlewares/access-control/access-control.middleware';
+import { RatelimitMiddleware } from './middlewares/ratelimit/ratelimit.middleware';
 
 @Module({
   imports: [
@@ -23,6 +24,9 @@ import { AccessControlMiddleware } from './middlewares/access-control/access-con
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AccessControlMiddleware).forRoutes('/');
+    consumer
+      .apply(AccessControlMiddleware, RatelimitMiddleware)
+      .forRoutes('/')
   }
 }
+  
