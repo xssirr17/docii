@@ -23,10 +23,13 @@ export class otpService {
         throw errors.otpAlredySent;
       }
       const secret = speakeasy.generateSecret({ length: 20 });
-      const code = speakeasy.totp({
+      let code = speakeasy.totp({
         secret: secret.base32,
         encoding: 'base32',
       });
+      code /= 10;
+      code = code.toString();
+      
       await Promise.all([
         this.smsService.send(mobileNumber, code),
         this.cacheManager.set(cacheOtpKey, code, this.expireTime),

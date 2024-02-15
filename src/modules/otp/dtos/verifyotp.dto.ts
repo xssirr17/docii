@@ -2,7 +2,7 @@ import { IsNotEmpty, Length } from 'class-validator';
 
 export class verifyOtp {
   @IsNotEmpty()
-  @Length(6)
+  @Length(5)
   otp: string;
 
   @IsNotEmpty()
