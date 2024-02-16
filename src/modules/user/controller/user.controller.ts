@@ -21,7 +21,7 @@ export class userController {
   async register(@Body() registerInputs: registerDto, @Res() res: Response) {
     try {
       const existOrNot: boolean = await this.userService.existOrNot(
-        registerInputs.mobileNumber,
+        registerInputs.nationalId,
       );
       if (existOrNot) {
         res.status(errors.duplicateUser.statusCode).send(errors.duplicateUser);

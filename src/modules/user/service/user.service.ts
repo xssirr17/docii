@@ -14,8 +14,8 @@ export class userService {
     return userModel.save();
   }
 
-  async existOrNot(mobileNumber: string): Promise<boolean> {
-    const result: object[] = await this.UserModel.find({ mobileNumber });
+  async existOrNot(nationalId: string): Promise<boolean> {
+    const result: object[] = await this.UserModel.find({ nationalId });
     return !!result.length;
   }
 }

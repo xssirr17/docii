@@ -4,6 +4,10 @@ export class registerDto {
   @IsNotEmpty()
   @Length(11)
   mobileNumber: string;
+
+  @IsNotEmpty()
+  @Length(10)
+  nationalId: string;
   @IsNotEmpty()
   firstName: string;
   @IsNotEmpty()
