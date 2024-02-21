@@ -4,7 +4,7 @@ import { Cache } from 'cache-manager';
 import errors from 'src/constants/errors';
 import * as speakeasy from 'speakeasy';
 import { SmsService } from '../../sms/service/sms.service';
-import { sign } from 'jsonwebtoken';
+import { generateToken } from 'src/helpers/generateToken';
 
 @Injectable()
 export class otpService {
@@ -15,7 +15,7 @@ export class otpService {
     private smsService: SmsService,
   ) {
     this.otpExpireTime = 2 * 60 * 1000;
-    this.tempTokenExpireTime = 60 * 60 * 1000;
+    this.tempTokenExpireTime = 60 * 60;
   }
 
   async send(mobileNumber: string) {
@@ -49,7 +49,7 @@ export class otpService {
         const payload: object = {
           mobileNumber,
         };
-        const token = this.#generateTempToken(payload);
+        const token = generateToken(payload, this.tempTokenExpireTime);
         await this.#storeTempToken(token, mobileNumber);
         return token;
       } else {
@@ -60,12 +60,6 @@ export class otpService {
     }
   }
 
-  #generateTempToken(payload: object) {
-    const exp = Math.floor(Date.now() / 1000) + 60 * 60;
-    const privateKey = process.env.PRIVATE_KEY;
-    const token = sign({ ...payload, exp }, privateKey);
-    return token;
-  }
   async #storeTempToken(token: string, mobileNumber: string) {
     const tokenkey = `tempToken_${mobileNumber}`;
     await this.cacheManager.set(tokenkey, token, this.tempTokenExpireTime);

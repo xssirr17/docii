@@ -27,7 +27,15 @@ export class userController {
         res.status(errors.duplicateUser.statusCode).send(errors.duplicateUser);
       }
       await this.userService.create(registerInputs);
-      res.status(response.registered.statusCode).send(response.registered);
+      const token = this.userService.generateToken({
+        mobileNumber: registerInputs.mobileNumber,
+      });
+      await this.userService.prepareRegisterTokens(
+        token,
+        registerInputs.mobileNumber,
+      );
+      const result = { ...response.registered, token };
+      res.status(response.registered.statusCode).send(result);
     } catch (err) {
       console.log(err);
       res.status(errors.registerError.statusCode).send(errors.registerError);
