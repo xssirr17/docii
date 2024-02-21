@@ -34,8 +34,12 @@ export class otpController {
   @UsePipes(new ValidationPipe())
   async verifyOtp(@Body() inputData: verifyOtp, @Res() res: Response) {
     try {
-      await this.otpService.verify(inputData.mobileNumber, inputData.otp);
-      res.status(response.otpVerified.statusCode).send(response.otpVerified);
+     const token = await this.otpService.verify(
+       inputData.mobileNumber,
+       inputData.otp,
+     );
+     const result = { ...response.otpVerified, token };
+     res.status(response.otpVerified.statusCode).send(result);
     } catch (err) {
       console.log(err);
       const error: ErrorsDto = err?.code ? err : errors.internalError;

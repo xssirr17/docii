@@ -1,7 +1,7 @@
 export default {
   duplicateUser: {
     code: 'duplicateUser',
-    message: 'mobileNumber registered before',
+    message: 'user registered before',
     statusCode: 409,
   },
   registerError: {
