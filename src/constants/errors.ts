@@ -39,4 +39,9 @@ export default {
     message: 'otp expired try to send another',
     statusCode: 404,
   },
+  unauthorized: {
+    code: 'unauthorized',
+    message: 'invalid temporary token',
+    statusCode: 401,
+  },
 };
