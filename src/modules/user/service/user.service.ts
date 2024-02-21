@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { generateToken } from 'src/helpers/generateToken';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import errors from 'src/constants/errors';
 
 @Injectable()
 export class userService {
@@ -40,5 +41,28 @@ export class userService {
       this.cacheManager.set(tokenKey, token, this.loginExpirationTime * 1000),
     ];
     await Promise.allSettled(tokenPromises);
+  }
+
+  async login(loginInput) {
+    const { password, mobileNumber, nationalId } = loginInput;
+    let id = mobileNumber ? 'mobileNumber' : 'nationalId';
+    let user = await this.UserModel.findById({ [id]: loginInput[id] });
+
+    if (!user || user.password != password) {
+      throw errors.wrongUserOrPass;
+    }
+
+    const token = this.generateToken({ [id]: loginInput[id] });
+    await this.#prepareLoginToken(token, id);
+    return token;
+  }
+
+  async #prepareLoginToken(token: string, id: string) {
+    const tokenKey = `token_${id}`;
+    await this.cacheManager.set(
+      tokenKey,
+      token,
+      this.loginExpirationTime * 1000,
+    );
   }
 }

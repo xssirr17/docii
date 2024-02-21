@@ -11,7 +11,12 @@ export default {
   },
   registered: {
     code: 'registered',
-    message: 'user register successfully',
+    message: 'user registered successfully',
+    statusCode: 200,
+  },
+  logedIn: {
+    code: 'logedIn',
+    message: 'user loged in successfully',
     statusCode: 200,
   },
 };

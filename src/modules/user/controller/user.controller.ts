@@ -11,6 +11,7 @@ import { registerDto } from '../dtos/register.dto';
 import response from 'src/constants/response';
 import errors from 'src/constants/errors';
 import { Response } from 'express';
+import { loginDto } from '../dtos/login.dto';
 
 @Controller('user')
 export class userController {
@@ -39,6 +40,19 @@ export class userController {
     } catch (err) {
       console.log(err);
       res.status(errors.registerError.statusCode).send(errors.registerError);
+    }
+  }
+
+  @Post('login')
+  @UsePipes(new ValidationPipe())
+  async login(@Body() loginInput: loginDto, @Res() res: Response) {
+    try {
+      const token = await this.userService.login(loginInput);
+      const result = { ...response.logedIn, token };
+      res.status(response.logedIn.statusCode).send(result);
+    } catch (err) {
+      console.log(err);
+      res.status(errors.unauthorized.statusCode).send(errors.unauthorized);
     }
   }
 }

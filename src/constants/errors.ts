@@ -44,4 +44,9 @@ export default {
     message: 'invalid temporary token',
     statusCode: 401,
   },
+  wrongUserOrPass: {
+    code: 'wrongUserOrPass',
+    message: 'wrong id (mobileNumber , nationalId) or password',
+    statusCode: 401,
+  },
 };
