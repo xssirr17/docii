@@ -46,15 +46,15 @@ export class userService {
   async login(loginInput) {
     const { password, mobileNumber, nationalId } = loginInput;
     let id = mobileNumber ? 'mobileNumber' : 'nationalId';
-    let user = await this.UserModel.findById({ [id]: loginInput[id] });
+    let user = await this.UserModel.findOne({ [id]: loginInput[id] }).exec();
 
     if (!user || user.password != password) {
       throw errors.wrongUserOrPass;
+    } else {
+      const token = this.generateToken({ [id]: loginInput[id] });
+      await this.#prepareLoginToken(token, loginInput[id]);
+      return token;
     }
-
-    const token = this.generateToken({ [id]: loginInput[id] });
-    await this.#prepareLoginToken(token, id);
-    return token;
   }
 
   async #prepareLoginToken(token: string, id: string) {
@@ -64,5 +64,16 @@ export class userService {
       token,
       this.loginExpirationTime * 1000,
     );
+  }
+
+  async alreadyLoggedInOrNot(loginInput){
+    const {nationalId,mobileNumber} = loginInput
+    const tokenKey = `token_${nationalId}`;
+    const tokenKey2 = `token_${mobileNumber}`;
+    const result = await Promise.all([
+      this.cacheManager.get(tokenKey2),
+      this.cacheManager.get(tokenKey),
+    ]);
+    return result[0] || result[1]
   }
 }

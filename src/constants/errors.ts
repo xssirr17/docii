@@ -49,4 +49,9 @@ export default {
     message: 'wrong id (mobileNumber , nationalId) or password',
     statusCode: 401,
   },
+  alreadyLoggedIn: {
+    code: 'alreadyLoggedIn',
+    message: 'user already logged in',
+    statusCode: 400,
+  },
 };

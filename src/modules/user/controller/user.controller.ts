@@ -47,9 +47,19 @@ export class userController {
   @UsePipes(new ValidationPipe())
   async login(@Body() loginInput: loginDto, @Res() res: Response) {
     try {
-      const token = await this.userService.login(loginInput);
-      const result = { ...response.logedIn, token };
-      res.status(response.logedIn.statusCode).send(result);
+      
+      const alreadyLoggedInOrNot =
+        await this.userService.alreadyLoggedInOrNot(loginInput);
+      if (alreadyLoggedInOrNot) {
+        res
+          .status(errors.alreadyLoggedIn.statusCode)
+          .send(errors.alreadyLoggedIn);
+      } else {
+        const token = await this.userService.login(loginInput);
+        const result = { ...response.loggedIn, token };
+        res.status(response.loggedIn.statusCode).send(result);
+      }
+
     } catch (err) {
       console.log(err);
       res.status(errors.unauthorized.statusCode).send(errors.unauthorized);

@@ -11,8 +11,11 @@ export class User {
   @Prop({ required: true })
   lastName: string;
 
-  @Prop({ required: true, default: 'pk', unique: true })
+  @Prop({ required: true })
   mobileNumber: string;
+
+  @Prop({ required: true, default: 'pk', unique: true })
+  nationalId: string;
 
   @Prop({ required: true })
   password: string;

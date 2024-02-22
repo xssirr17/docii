@@ -14,9 +14,9 @@ export default {
     message: 'user registered successfully',
     statusCode: 200,
   },
-  logedIn: {
-    code: 'logedIn',
-    message: 'user loged in successfully',
+  loggedIn: {
+    code: 'loggedIn',
+    message: 'user logged in successfully',
     statusCode: 200,
   },
 };
