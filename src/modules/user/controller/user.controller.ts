@@ -71,9 +71,9 @@ export class userController {
   @UsePipes(new ValidationPipe())
   async logout(@Req() req:Request,@Res() res: Response) {
     try {
-      const token = req.headers.token
-      console.log(token);
-      await this.userService.logout(token)
+      const token = req.headers.token;
+      await this.userService.logout(token);
+      res.status(response.loggedOut.statusCode).send(response.loggedOut);
     } catch (err) {
       console.log(err);
       err = err?.code ? err : errors.unauthorized;

@@ -19,4 +19,9 @@ export default {
     message: 'user logged in successfully',
     statusCode: 200,
   },
+  loggedOut: {
+    code: 'loggedOut',
+    message: 'user logged out successfully',
+    statusCode: 200,
+  },
 };
