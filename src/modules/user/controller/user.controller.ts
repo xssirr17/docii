@@ -19,10 +19,7 @@ export class userController {
 
   @Post('register')
   @UsePipes(new ValidationPipe())
-  async register(
-    @Body() registerInputs: registerDto,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async register(@Body() registerInputs: registerDto, @Res() res: Response) {
     try {
       const existOrNot: boolean = await this.userService.existOrNot(
         registerInputs.nationalId,
@@ -49,10 +46,7 @@ export class userController {
 
   @Post('login')
   @UsePipes(new ValidationPipe())
-  async login(
-    @Body() loginInput: loginDto,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async login(@Body() loginInput: loginDto, @Res() res: Response) {
     try {
       const alreadyLoggedInOrNot =
         await this.userService.alreadyLoggedInOrNot(loginInput);
