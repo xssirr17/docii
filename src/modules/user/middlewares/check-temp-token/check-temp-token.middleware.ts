@@ -9,8 +9,8 @@ import { NextFunction } from 'express';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { verify } from 'jsonwebtoken';
-import { registerDto } from '../../dtos/register.dto';
 import errors from 'src/constants/errors';
+import { getTokenPayload } from 'src/helpers/getTokenPayload';
 
 @Injectable()
 export class CheckTempTokenMiddleware implements NestMiddleware {
@@ -33,12 +33,10 @@ export class CheckTempTokenMiddleware implements NestMiddleware {
     if (!token) {
       return false;
     } else if (token == inputToken) {
-      const privateKey = process.env.PRIVATE_KEY;
-      verify(inputToken, privateKey, (err, decoded) => {
-        if (err) {
-          return false;
-        }
-      });
+      const decodedToken = await getTokenPayload(inputToken);
+      if (!decodedToken) {
+        return false;
+      }
       return true;
     }
     return false;

@@ -4,13 +4,14 @@ import {
   Post,
   UsePipes,
   Res,
+  Req,
   ValidationPipe,
 } from '@nestjs/common';
 import { userService } from '../service/user.service';
 import { registerDto } from '../dtos/register.dto';
 import response from 'src/constants/response';
 import errors from 'src/constants/errors';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { loginDto } from '../dtos/login.dto';
 
 @Controller('user')
@@ -49,7 +50,7 @@ export class userController {
   async login(@Body() loginInput: loginDto, @Res() res: Response) {
     try {
       const alreadyLoggedInOrNot =
-        await this.userService.alreadyLoggedInOrNot(loginInput);
+        await this.userService.alreadyLoggedInOrNot(loginInput.mobileNumber);
       if (alreadyLoggedInOrNot) {
         res
           .status(errors.alreadyLoggedIn.statusCode)
@@ -59,6 +60,20 @@ export class userController {
         const result = { ...response.loggedIn, token };
         res.status(response.loggedIn.statusCode).send(result);
       }
+    } catch (err) {
+      console.log(err);
+      err = err?.code ? err : errors.unauthorized;
+      res.status(err.statusCode).send(err);
+    }
+  }
+
+  @Post('logout')
+  @UsePipes(new ValidationPipe())
+  async logout(@Req() req:Request,@Res() res: Response) {
+    try {
+      const token = req.headers.token
+      console.log(token);
+      await this.userService.logout(token)
     } catch (err) {
       console.log(err);
       err = err?.code ? err : errors.unauthorized;

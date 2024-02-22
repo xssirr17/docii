@@ -6,6 +6,8 @@ import { generateToken } from 'src/helpers/generateToken';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import errors from 'src/constants/errors';
+import { loginDto } from '../dtos/login.dto';
+import { getTokenPayload } from 'src/helpers/getTokenPayload';
 
 @Injectable()
 export class userService {
@@ -43,16 +45,15 @@ export class userService {
     await Promise.allSettled(tokenPromises);
   }
 
-  async login(loginInput) {
-    const { password, mobileNumber, nationalId } = loginInput;
-    let id = mobileNumber ? 'mobileNumber' : 'nationalId';
-    let user = await this.UserModel.findOne({ [id]: loginInput[id] }).exec();
+  async login(loginInput: loginDto) {
+    const { password, mobileNumber } = loginInput;
+    let user = await this.UserModel.findOne({ mobileNumber }).exec();
 
     if (!user || user.password != password) {
       throw errors.wrongUserOrPass;
     } else {
-      const token = this.generateToken({ [id]: loginInput[id] });
-      await this.#prepareLoginToken(token, loginInput[id]);
+      const token = this.generateToken({ mobileNumber });
+      await this.#prepareLoginToken(token, mobileNumber);
       return token;
     }
   }
@@ -66,14 +67,13 @@ export class userService {
     );
   }
 
-  async alreadyLoggedInOrNot(loginInput){
-    const {nationalId,mobileNumber} = loginInput
-    const tokenKey = `token_${nationalId}`;
-    const tokenKey2 = `token_${mobileNumber}`;
-    const result = await Promise.all([
-      this.cacheManager.get(tokenKey2),
-      this.cacheManager.get(tokenKey),
-    ]);
-    return result[0] || result[1]
+  async alreadyLoggedInOrNot(mobileNumber) {
+    const tokenKey = `token_${mobileNumber}`;
+    return await this.cacheManager.get(tokenKey);
+  }
+
+  async logout(token) {
+    const payload = await getTokenPayload(token);
+    console.log(payload);
   }
 }

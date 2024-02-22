@@ -1,20 +1,9 @@
-import {
-  IsOptional,
-  Length,
-  MinLength,
-  Matches,
-  ValidateIf,
-  IsDefined,
-} from 'class-validator';
+import { Length, MinLength, Matches, IsNotEmpty } from 'class-validator';
 
 export class loginDto {
+  @IsNotEmpty()
   @Length(11)
-  @IsOptional()
   mobileNumber?: string;
-
-  @IsOptional()
-  @Length(10)
-  nationalId?: string;
 
   @MinLength(8)
   @Matches(/\d/, { message: 'Password must contain at least one digit' })
@@ -28,13 +17,4 @@ export class loginDto {
     message: 'Password must contain at least one special character',
   })
   password: string;
-
-  @ValidateIf(
-    (o) =>
-      (!o.mobileNumber && !o.nationalId) || (o.mobileNumber && o.nationalId),
-  )
-  @IsDefined({
-    message: 'Provide either mobileNumber or nationalId, and only one of them',
-  })
-  protected readonly combinedCheck: undefined;
 }
