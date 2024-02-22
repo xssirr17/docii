@@ -19,7 +19,10 @@ export class userController {
 
   @Post('register')
   @UsePipes(new ValidationPipe())
-  async register(@Body() registerInputs: registerDto, @Res() res: Response) {
+  async register(
+    @Body() registerInputs: registerDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     try {
       const existOrNot: boolean = await this.userService.existOrNot(
         registerInputs.nationalId,
@@ -36,6 +39,7 @@ export class userController {
         registerInputs.mobileNumber,
       );
       const result = { ...response.registered, token };
+      res.cookie('token', token);
       res.status(response.registered.statusCode).send(result);
     } catch (err) {
       console.log(err);
@@ -45,9 +49,11 @@ export class userController {
 
   @Post('login')
   @UsePipes(new ValidationPipe())
-  async login(@Body() loginInput: loginDto, @Res() res: Response) {
+  async login(
+    @Body() loginInput: loginDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     try {
-      
       const alreadyLoggedInOrNot =
         await this.userService.alreadyLoggedInOrNot(loginInput);
       if (alreadyLoggedInOrNot) {
@@ -60,7 +66,6 @@ export class userController {
         res.cookie('token', token);
         res.status(response.loggedIn.statusCode).send(result);
       }
-
     } catch (err) {
       console.log(err);
       res.status(errors.unauthorized.statusCode).send(errors.unauthorized);
