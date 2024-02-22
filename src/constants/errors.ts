@@ -41,7 +41,7 @@ export default {
   },
   unauthorized: {
     code: 'unauthorized',
-    message: 'invalid temporary token',
+    message: 'unauthorized',
     statusCode: 401,
   },
   wrongUserOrPass: {

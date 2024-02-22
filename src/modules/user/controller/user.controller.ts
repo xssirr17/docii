@@ -43,7 +43,8 @@ export class userController {
       res.status(response.registered.statusCode).send(result);
     } catch (err) {
       console.log(err);
-      res.status(errors.registerError.statusCode).send(errors.registerError);
+      err = err?.code ? err : errors.registerError;
+      res.status(err.statusCode).send(err);
     }
   }
 
@@ -68,7 +69,8 @@ export class userController {
       }
     } catch (err) {
       console.log(err);
-      res.status(errors.unauthorized.statusCode).send(errors.unauthorized);
+      err = err?.code ? err : errors.unauthorized;
+      res.status(err.statusCode).send(err);
     }
   }
 }
