@@ -68,4 +68,28 @@ export class otpService {
       this.tempTokenExpireTime * 1000,
     );
   }
+
+  async fakeSend(mobileNumber: string) {
+    try {
+      const cacheOtpKey: string = `otp_${mobileNumber}`;
+      const activeOtp: string = await this.cacheManager.get(cacheOtpKey);
+      if (activeOtp) {
+        throw errors.otpAlredySent;
+      }
+      const secret = speakeasy.generateSecret({ length: 20 });
+      let code = speakeasy.totp({
+        secret: secret.base32,
+        encoding: 'base32',
+      });
+      code /= 10;
+      code = Math.trunc(code).toString();
+
+      await Promise.all([
+        this.cacheManager.set(cacheOtpKey, code, this.otpExpireTime),
+      ]);
+      return code;
+    } catch (err) {
+      throw err;
+    }
+  }
 }

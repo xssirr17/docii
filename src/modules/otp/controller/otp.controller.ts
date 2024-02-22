@@ -30,16 +30,30 @@ export class otpController {
     }
   }
 
+  @Post('fakeSend')
+  @UsePipes(new ValidationPipe())
+  async fakeSend(@Body() inputData: sendOtp, @Res() res: Response) {
+    try {
+      const otp = await this.otpService.fakeSend(inputData.mobileNumber);
+      const result = { ...response.otpSent, otp };
+      res.status(response.otpSent.statusCode).send(result);
+    } catch (err) {
+      console.log(err);
+      const error: ErrorsDto = err?.code ? err : errors.internalError;
+      res.status(error.statusCode).send(error);
+    }
+  }
+
   @Post('verify')
   @UsePipes(new ValidationPipe())
   async verifyOtp(@Body() inputData: verifyOtp, @Res() res: Response) {
     try {
-     const token = await this.otpService.verify(
-       inputData.mobileNumber,
-       inputData.otp,
-     );
-     const result = { ...response.otpVerified, token };
-     res.status(response.otpVerified.statusCode).send(result);
+      const token = await this.otpService.verify(
+        inputData.mobileNumber,
+        inputData.otp,
+      );
+      const result = { ...response.otpVerified, token };
+      res.status(response.otpVerified.statusCode).send(result);
     } catch (err) {
       console.log(err);
       const error: ErrorsDto = err?.code ? err : errors.internalError;
