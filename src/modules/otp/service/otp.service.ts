@@ -62,6 +62,10 @@ export class otpService {
 
   async #storeTempToken(token: string, mobileNumber: string) {
     const tokenkey = `tempToken_${mobileNumber}`;
-    await this.cacheManager.set(tokenkey, token, this.tempTokenExpireTime);
+    await this.cacheManager.set(
+      tokenkey,
+      token,
+      this.tempTokenExpireTime * 1000,
+    );
   }
 }

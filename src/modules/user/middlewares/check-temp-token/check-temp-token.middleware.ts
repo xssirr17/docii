@@ -15,19 +15,21 @@ import errors from 'src/constants/errors';
 @Injectable()
 export class CheckTempTokenMiddleware implements NestMiddleware {
   constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
-  async use(@Headers() headers, @Body() body: registerDto, next: NextFunction) {
-    const token = headers.token;
+  async use(req: any, res: any, next: NextFunction) {
+    const token = req.headers?.token;
+    const body = req?.body;
+
     const mobileNumber = body.mobileNumber;
     const isVerify = await this.#verifyTempToken(mobileNumber, token);
     if (isVerify) {
       next();
-    }
-    throw errors.unauthorized;
+    } else throw errors.unauthorized;
   }
 
   async #verifyTempToken(mobileNumber: string, inputToken: string) {
     const tokenKey = `tempToken_${mobileNumber}`;
     const token = await this.cacheManager.get(tokenKey);
+
     if (!token) {
       return false;
     } else if (token == inputToken) {
