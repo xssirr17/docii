@@ -57,6 +57,7 @@ export class userController {
       } else {
         const token = await this.userService.login(loginInput);
         const result = { ...response.loggedIn, token };
+        res.cookie('token', token);
         res.status(response.loggedIn.statusCode).send(result);
       }
 
