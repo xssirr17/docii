@@ -16,6 +16,7 @@ import { Response, Request } from 'express';
 import { loginDto } from '../dtos/login.dto';
 import { RolesGuards } from 'src/guards/roles.guards';
 import { Roles } from 'src/decorators/roles.decorator';
+import { AuthGuards } from 'src/guards/auth.guard';
 
 @Controller('user')
 export class userController {
@@ -73,7 +74,7 @@ export class userController {
 
   @Post('logout')
   @Roles(['user'])
-  @UseGuards(RolesGuards)
+  @UseGuards(AuthGuards, RolesGuards)
   @UsePipes(new ValidationPipe())
   async logout(@Req() req: Request, @Res() res: Response) {
     try {

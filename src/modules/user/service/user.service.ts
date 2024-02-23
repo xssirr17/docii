@@ -75,7 +75,7 @@ export class userService {
 
   async logout(token) {
     const payload = await getTokenPayload(token);
-    const tokenKey = `token-${payload.mobileNumber}`;
+    const tokenKey = `token_${payload.mobileNumber}`;
     await this.cacheManager.del(tokenKey);
   }
 }
