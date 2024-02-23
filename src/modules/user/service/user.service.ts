@@ -31,7 +31,8 @@ export class userService {
     return !!result.length;
   }
 
-  generateToken(payload: object): string {
+  generateToken(payload): string {
+    payload.roles = ['user'];
     return generateToken(payload, this.loginExpirationTime);
   }
 
