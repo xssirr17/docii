@@ -1,2 +1,9 @@
 # docii
-the start learning nestjs and just practice with coding this project
+practice project 
+
+# technologies
+nestjs
+typescript
+mongodb
+redis
+docker
