@@ -1,5 +1,4 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { AuthModule } from './modules/auth/auth.module';
 import { MongoModule } from './databases/mongo/mongo.module';
 import { UserModule } from './modules/user/user.module';
 import { ConfigModule } from '@nestjs/config';
@@ -11,7 +10,6 @@ import { RatelimitMiddleware } from './middlewares/ratelimit/ratelimit.middlewar
 
 @Module({
   imports: [
-    AuthModule,
     MongoModule,
     UserModule,
     ConfigModule.forRoot(),

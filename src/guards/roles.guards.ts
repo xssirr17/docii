@@ -8,17 +8,15 @@ import { getTokenPayload } from 'src/helpers/getTokenPayload';
 export class RolesGuards implements CanActivate {
   constructor(private reflector: Reflector) {}
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  async canActivate(context: ExecutionContext) {
     const req = context.switchToHttp().getRequest();
     const roles = this.reflector.get(Roles, context.getHandler());
     const token = req.headers.token;
-    const userRoles = getTokenPayload(token).roles;
+    const userRoles = (await getTokenPayload(token)).roles;
 
     let hasAccessOrNot = false;
 
-    userRoles.forEach((role) => {
+    userRoles?.forEach((role) => {
       if (roles.includes(role)) {
         hasAccessOrNot = true;
       }

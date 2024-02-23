@@ -6,6 +6,7 @@ import {
   Res,
   Req,
   ValidationPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { userService } from '../service/user.service';
 import { registerDto } from '../dtos/register.dto';
@@ -13,6 +14,8 @@ import response from 'src/constants/response';
 import errors from 'src/constants/errors';
 import { Response, Request } from 'express';
 import { loginDto } from '../dtos/login.dto';
+import { RolesGuards } from 'src/guards/roles.guards';
+import { Roles } from 'src/decorators/roles.decorator';
 
 @Controller('user')
 export class userController {
@@ -49,8 +52,9 @@ export class userController {
   @UsePipes(new ValidationPipe())
   async login(@Body() loginInput: loginDto, @Res() res: Response) {
     try {
-      const alreadyLoggedInOrNot =
-        await this.userService.alreadyLoggedInOrNot(loginInput.mobileNumber);
+      const alreadyLoggedInOrNot = await this.userService.alreadyLoggedInOrNot(
+        loginInput.mobileNumber,
+      );
       if (alreadyLoggedInOrNot) {
         res
           .status(errors.alreadyLoggedIn.statusCode)
@@ -68,8 +72,10 @@ export class userController {
   }
 
   @Post('logout')
+  @Roles(['user'])
+  @UseGuards(RolesGuards)
   @UsePipes(new ValidationPipe())
-  async logout(@Req() req:Request,@Res() res: Response) {
+  async logout(@Req() req: Request, @Res() res: Response) {
     try {
       const token = req.headers.token;
       await this.userService.logout(token);
