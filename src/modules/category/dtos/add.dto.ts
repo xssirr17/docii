@@ -6,9 +6,7 @@ export class DeleteCategory {
   @IsNotEmpty()
   name: string;
 
-  @IsNotEmpty()
   description: string;
 
-  @IsNotEmpty()
   link: string;
 }

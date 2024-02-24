@@ -11,10 +11,10 @@ export class Category {
   @Prop({ required: true, default: 'pk', unique: true })
   id: string;
 
-  @Prop({ required: true })
+  @Prop()
   link: string;
 
-  @Prop({ required: true })
+  @Prop()
   description: Date;
 }
 export const CategorySchema = SchemaFactory.createForClass(Category);
