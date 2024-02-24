@@ -7,6 +7,8 @@ import { OtpModule } from './modules/otp/otp.module';
 import { RedisModule } from './databases/redis/redis.module';
 import { AccessControlMiddleware } from './middlewares/access-control/access-control.middleware';
 import { RatelimitMiddleware } from './middlewares/ratelimit/ratelimit.middleware';
+import { CategoryModule } from './modules/category/category.module';
+import { DoctorModule } from './modules/doctor/doctor.module';
 
 @Module({
   imports: [
@@ -16,15 +18,15 @@ import { RatelimitMiddleware } from './middlewares/ratelimit/ratelimit.middlewar
     SmsModule,
     OtpModule,
     RedisModule,
+    CategoryModule,
+    DoctorModule,
   ],
   controllers: [],
   providers: [],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(AccessControlMiddleware, RatelimitMiddleware)
-      .forRoutes('/')
+    consumer.apply(AccessControlMiddleware, RatelimitMiddleware).forRoutes('/');
   }
 }
   
