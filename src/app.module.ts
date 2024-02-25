@@ -9,6 +9,7 @@ import { AccessControlMiddleware } from './middlewares/access-control/access-con
 import { RatelimitMiddleware } from './middlewares/ratelimit/ratelimit.middleware';
 import { CategoryModule } from './modules/category/category.module';
 import { DoctorModule } from './modules/doctor/doctor.module';
+import { FilesModule } from './modules/files/files.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { DoctorModule } from './modules/doctor/doctor.module';
     RedisModule,
     CategoryModule,
     DoctorModule,
+    FilesModule,
   ],
   controllers: [],
   providers: [],
