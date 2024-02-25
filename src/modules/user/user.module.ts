@@ -1,7 +1,6 @@
 import {
   MiddlewareConsumer,
   Module,
-  NestMiddleware,
   NestModule,
 } from '@nestjs/common';
 import { userService } from './service/user.service';

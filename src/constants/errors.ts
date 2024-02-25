@@ -54,4 +54,12 @@ export default {
     message: 'user already logged in',
     statusCode: 400,
   },
+  alreadyExist: {
+    code: 'alreadyExist',
+    statusCode: 400,
+  },
+  notFound: {
+    code: 'notFound',
+    statusCode: 404,
+  },
 };

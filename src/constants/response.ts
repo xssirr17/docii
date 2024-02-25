@@ -24,4 +24,8 @@ export default {
     message: 'user logged out successfully',
     statusCode: 200,
   },
+  success: {
+    code: 'success',
+    statusCode: 200,
+  },
 };

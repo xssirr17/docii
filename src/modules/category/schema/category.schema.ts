@@ -5,16 +5,13 @@ export type categoryDocument = HydratedDocument<Category>;
 
 @Schema()
 export class Category {
-  @Prop({ required: true })
-  name: string;
-
   @Prop({ required: true, default: 'pk', unique: true })
-  id: string;
+  name: string;
 
   @Prop()
   link: string;
 
   @Prop()
-  description: Date;
+  description: string;
 }
 export const CategorySchema = SchemaFactory.createForClass(Category);
