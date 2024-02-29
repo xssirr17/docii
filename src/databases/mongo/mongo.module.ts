@@ -7,7 +7,6 @@ import { MongooseModule } from '@nestjs/mongoose';
       useFactory: () => ({
         uri: process.env.DATABASE_URI,
         useNewUrlParser: true,
-        useUnifiedTopology: true,
       }),
     }),
   ],
