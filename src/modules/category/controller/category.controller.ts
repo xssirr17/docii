@@ -19,11 +19,11 @@ import errors from 'src/constants/errors';
 import responses from 'src/constants/response';
 
 @Controller('category')
-@UsePipes(new ValidationPipe())
 export class CategoryController {
   constructor(private categoryService: CategoryService) {}
 
   @Post()
+  @UsePipes(new ValidationPipe())
   async addCategory(@Body() input: AddCategoryDto, @Res() response: Response) {
     try {
       let result: object = await this.categoryService.add(input);
@@ -37,6 +37,7 @@ export class CategoryController {
   }
 
   @Delete()
+  @UsePipes(new ValidationPipe())
   async deleteCategory(
     @Body() input: DeleteCategoryDto,
     @Res() response: Response,
@@ -52,6 +53,7 @@ export class CategoryController {
   }
 
   @Put()
+  @UsePipes(new ValidationPipe())
   async updateCategory(
     @Body() input: UpdateCategoryDto,
     @Res() response: Response,
