@@ -15,6 +15,10 @@ services :
       image : mongo
       ports:
         - 27017:27017
+      environment:
+        - MONGO_INITDB_ROOT_USERNAME=outofearth
+        - MONGO_INITDB_ROOT_PASSWORD=Outofearth1771*
+
 
     mongo-express:
         image: mongo-express
