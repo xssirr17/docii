@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IsDate, IsNotEmpty } from 'class-validator';
+import { IsDate, IsNotEmpty, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 
 @Injectable()
@@ -10,6 +10,7 @@ export class UpdateDoctorDto {
 
   nationalId: string;
 
+  @IsOptional()
   @IsDate()
   @Type(() => Date)
   birthDate: Date;

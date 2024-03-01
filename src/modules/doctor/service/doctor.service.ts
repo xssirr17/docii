@@ -32,8 +32,12 @@ export class DoctorService {
     const doctorModel = new this.doctorModel(doctorInfo);
     return doctorModel.save();
   }
-  async delete(input: DeleteDoctorDto) {}
-  async update(input: UpdateDoctorDto) {}
+  async delete(input: DeleteDoctorDto) {
+    return await this.doctorModel.deleteOne({ id: input.id });
+  }
+  async update(input: UpdateDoctorDto) {
+    return await this.doctorModel.updateOne({ id: input.id }, input);
+  }
   async get({ id, page, sortBy, sortType }) {
     if (id) {
       return await this.#getById(id);
