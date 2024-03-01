@@ -62,4 +62,9 @@ export default {
     code: 'notFound',
     statusCode: 404,
   },
+  categoryNotFound: {
+    code: 'categoryNotFound',
+    message: 'category not found',
+    statusCode: 404,
+  },
 };

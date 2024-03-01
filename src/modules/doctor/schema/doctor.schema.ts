@@ -12,6 +12,12 @@ export class Doctor {
   lastName: string;
 
   @Prop({ required: true })
+  mobileNumber: string;
+
+  @Prop({ required: true })
+  nationalId: string;
+
+  @Prop({ required: true })
   birthDate: Date;
 
   @Prop({ required: true })
@@ -26,13 +32,13 @@ export class Doctor {
   @Prop()
   link: string;
 
-  @Prop()
+  @Prop({ required: true })
   score: number;
 
-  @Prop()
+  @Prop({ required: true })
   history: number;
 
-  @Prop()
+  @Prop({ required: true })
   followers: Array<string>;
 
   @Prop({ required: true })

@@ -3,24 +3,25 @@ import { IsDate, IsNotEmpty } from 'class-validator';
 import { Type } from 'class-transformer';
 
 @Injectable()
-export class RegisterDoctor {
-  @IsNotEmpty()
+export class UpdateDoctorDto {
   firstName: string;
 
-  @IsNotEmpty()
   lastName: string;
 
-  @IsNotEmpty()
+  nationalId: string;
+
   @IsDate()
   @Type(() => Date)
   birthDate: Date;
 
-  @IsNotEmpty()
   categories: Array<string>;
 
   biographi: string;
 
   link: string;
-  
+
   history: number;
+
+  @IsNotEmpty()
+  id: string;
 }
