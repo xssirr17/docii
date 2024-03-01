@@ -3,11 +3,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
-    MongooseModule.forRootAsync({
-      useFactory: () => ({
-        uri: process.env.DATABASE_URI,
-        useNewUrlParser: true,
-      }),
+    MongooseModule.forRoot(process.env.DATABASE_URI, {
+      dbName: process.env.DATABASE_NAME,
+      auth: {
+        username: process.env.DATABASE_USER,
+        password: process.env.DATABASE_PASS,
+      },
     }),
   ],
   controllers: [],
