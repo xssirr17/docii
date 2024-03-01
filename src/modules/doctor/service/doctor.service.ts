@@ -65,7 +65,7 @@ export class DoctorService {
   }
 
   async #getById(id: string) {
-    return await this.doctorModel.find({ _id: id });
+    return await this.doctorModel.find({ id: id });
   }
   async #getAll({ page, sortBy, sortType }) {
     if (page && sortBy && sortType) {
