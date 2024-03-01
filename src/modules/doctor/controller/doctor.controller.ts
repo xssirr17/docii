@@ -3,9 +3,9 @@ import {
   Controller,
   Delete,
   Get,
-  Param,
   Post,
   Put,
+  Query,
   Res,
   UsePipes,
   ValidationPipe,
@@ -59,12 +59,12 @@ export class DoctorController {
       res.status(err.statusCode).send(err);
     }
   }
-  @Get(':id?/:page?/:sortBy?/:sortType?')
+  @Get()
   async getDoctor(
-    @Param('id') id: string,
-    @Param('page') page: string,
-    @Param('sortBy') sortBy: ['score', 'history', 'followers'],
-    @Param('sortType') sortType: boolean,
+    @Query('id') id: string,
+    @Query('page') page: string,
+    @Query('sortBy') sortBy: string,
+    @Query('sortType') sortType,
     @Res() res: Response,
   ) {
     try {
