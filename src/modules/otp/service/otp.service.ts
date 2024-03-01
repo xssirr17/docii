@@ -30,8 +30,8 @@ export class otpService {
         secret: secret.base32,
         encoding: 'base32',
       });
-      code /= 10;
-      code = Math.trunc(code).toString();
+      code = code.toString();
+      code = code.substring(0, 5);
 
       await Promise.all([
         this.smsService.send(mobileNumber, code),
@@ -81,9 +81,9 @@ export class otpService {
         secret: secret.base32,
         encoding: 'base32',
       });
-      code /= 10;
-      code = Math.trunc(code).toString();
-
+      code = code.toString(); 
+      code = code.substring(0, 5);
+      
       await Promise.all([
         this.cacheManager.set(cacheOtpKey, code, this.otpExpireTime),
       ]);
