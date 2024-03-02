@@ -27,6 +27,7 @@ export class AuthGuards implements CanActivate {
       let hasAccessOrNot = false;
       if (token && token == userToken) {
         hasAccessOrNot = true;
+        req.mobileNumber = tokenPayload.mobileNumber;
       }
 
       return hasAccessOrNot;
