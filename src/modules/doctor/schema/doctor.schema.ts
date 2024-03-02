@@ -46,5 +46,11 @@ export class Doctor {
 
   @Prop({ required: true })
   password: string;
+
+  @Prop({ required: true })
+  presentUntil: Date;
+
+  @Prop({ required: true })
+  rangeOfBetweenPresent: number;
 }
 export const DoctorSchema = SchemaFactory.createForClass(Doctor);

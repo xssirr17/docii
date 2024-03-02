@@ -8,6 +8,7 @@ export class UpdateDoctorDto {
 
   lastName: string;
 
+  @IsOptional()
   @Length(10)
   nationalId: string;
 
@@ -24,6 +25,4 @@ export class UpdateDoctorDto {
 
   history: number;
 
-  @IsNotEmpty()
-  id: string;
 }

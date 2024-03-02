@@ -24,6 +24,7 @@ export class DoctorService {
     this.pageLimit = 10;
     this.loginExpirationTime = 48 * 60 * 60;
   }
+
   async create(input) {
     if (await this.#existOrNot(input.nationalId)) {
       throw errors.alreadyExist;
@@ -36,6 +37,8 @@ export class DoctorService {
     doctorInfo.followers = [];
     doctorInfo.joinAt = date;
     doctorInfo.id = uuidv4();
+    doctorInfo.presentUntil = date;
+    doctorInfo.rangeOfBetweenPresent = 0;
     const doctorModel = new this.doctorModel(doctorInfo);
     doctorModel.save();
     const token = this.#generateToken({
@@ -61,11 +64,15 @@ export class DoctorService {
     }
   }
 
-  async delete(input: DeleteDoctorDto) {
-    return await this.doctorModel.deleteOne({ id: input.id });
+  async registerPresent(input, mobileNumber) {
+    return await this.doctorModel.updateOne({ mobileNumber }, input);
   }
-  async update(input: UpdateDoctorDto) {
-    return await this.doctorModel.updateOne({ id: input.id }, input);
+
+  async delete(mobileNumber) {
+    return await this.doctorModel.deleteOne({ mobileNumber });
+  }
+  async update(input: UpdateDoctorDto, mobileNumber) {
+    return await this.doctorModel.updateOne({ mobileNumber }, input);
   }
   async get({ id, page, sortBy, sortType }) {
     if (id) {

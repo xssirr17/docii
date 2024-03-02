@@ -6,6 +6,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   Res,
   UseGuards,
   UsePipes,
@@ -17,11 +18,11 @@ import response from 'src/constants/response';
 import { Response } from 'express';
 import errors from 'src/constants/errors';
 import { UpdateDoctorDto } from '../dtos/updateDoctor.dto';
-import { DeleteDoctorDto } from '../dtos/deleteDoctor.dto';
 import { Roles } from 'src/decorators/roles.decorator';
 import { AuthGuards } from 'src/guards/auth.guard';
 import { RolesGuards } from 'src/guards/roles.guards';
 import { loginDto } from '../dtos/loginDoctor.dto';
+import { RegisterPresentDto } from '../dtos/registerPresent.dto';
 
 @Controller('doctor')
 export class DoctorController {
@@ -55,13 +56,34 @@ export class DoctorController {
     }
   }
 
+  @Post('present')
+  @Roles(['doctor'])
+  @UseGuards(AuthGuards, RolesGuards)
+  @UsePipes(new ValidationPipe())
+  async registerPresent(
+    @Body() input: RegisterPresentDto,
+    @Req() req,
+    @Res() res: Response,
+  ) {
+    try {
+      const mobileNumber = req.mobileNumber;
+      await this.doctorService.registerPresent(input, mobileNumber);
+      res.status(response.success.statusCode).send(response.success);
+    } catch (err) {
+      console.log(err);
+      err = err?.code ? err : errors.internalError;
+      res.status(err.statusCode).send(err);
+    }
+  }
+
   @Delete()
   @UsePipes(new ValidationPipe())
   @Roles(['doctor'])
   @UseGuards(AuthGuards, RolesGuards)
-  async deleteDoctor(@Body() input: DeleteDoctorDto, @Res() res: Response) {
+  async deleteDoctor(@Req() req, @Res() res: Response) {
     try {
-      await this.doctorService.delete(input);
+      const mobileNumber = req.mobileNumber;
+      await this.doctorService.delete(mobileNumber);
       res.status(response.success.statusCode).send(response.success);
     } catch (err) {
       console.log(err);
@@ -74,9 +96,14 @@ export class DoctorController {
   @Roles(['doctor'])
   @UseGuards(AuthGuards, RolesGuards)
   @UsePipes(new ValidationPipe())
-  async updateDoctor(@Body() input: UpdateDoctorDto, @Res() res: Response) {
+  async updateDoctor(
+    @Body() input: UpdateDoctorDto,
+    @Req() req,
+    @Res() res: Response,
+  ) {
     try {
-      await this.doctorService.update(input);
+      const mobileNumber = req.mobileNumber;
+      await this.doctorService.update(input, mobileNumber);
       res.status(response.success.statusCode).send(response.success);
     } catch (err) {
       console.log(err);
