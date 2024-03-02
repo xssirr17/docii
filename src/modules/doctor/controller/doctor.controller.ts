@@ -7,6 +7,7 @@ import {
   Put,
   Query,
   Res,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -17,6 +18,9 @@ import { Response } from 'express';
 import errors from 'src/constants/errors';
 import { UpdateDoctorDto } from '../dtos/updateDoctor.dto';
 import { DeleteDoctorDto } from '../dtos/deleteDoctor.dto';
+import { Roles } from 'src/decorators/roles.decorator';
+import { AuthGuards } from 'src/guards/auth.guard';
+import { RolesGuards } from 'src/guards/roles.guards';
 
 @Controller('doctor')
 export class DoctorController {
@@ -26,8 +30,8 @@ export class DoctorController {
   @UsePipes(new ValidationPipe())
   async addDoctor(@Body() input: RegisterDoctorDto, @Res() res: Response) {
     try {
-      let result: object = await this.doctorService.create(input);
-      result = { ...response.success, result };
+      let token: string = await this.doctorService.create(input);
+      const result = { ...response.success, token };
       res.status(response.success.statusCode).send(result);
     } catch (err) {
       console.log(err);
@@ -37,6 +41,8 @@ export class DoctorController {
   }
   @Delete()
   @UsePipes(new ValidationPipe())
+  @Roles(['doctor'])
+  @UseGuards(AuthGuards, RolesGuards)
   async deleteDoctor(@Body() input: DeleteDoctorDto, @Res() res: Response) {
     try {
       await this.doctorService.delete(input);
@@ -48,6 +54,8 @@ export class DoctorController {
     }
   }
   @Put()
+  @Roles(['doctor'])
+  @UseGuards(AuthGuards, RolesGuards)
   @UsePipes(new ValidationPipe())
   async updateDoctor(@Body() input: UpdateDoctorDto, @Res() res: Response) {
     try {
