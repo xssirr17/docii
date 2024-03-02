@@ -23,8 +23,6 @@ import { Category, CategorySchema } from '../category/schema/category.schema';
 })
 export class DoctorModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(CheckTempTokenMiddleware)
-      .forRoutes({ path: '/doctor', method: RequestMethod.POST });
+    consumer.apply(CheckTempTokenMiddleware).forRoutes('/doctor/register');
   }
 }

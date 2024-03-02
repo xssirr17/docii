@@ -21,12 +21,13 @@ import { DeleteDoctorDto } from '../dtos/deleteDoctor.dto';
 import { Roles } from 'src/decorators/roles.decorator';
 import { AuthGuards } from 'src/guards/auth.guard';
 import { RolesGuards } from 'src/guards/roles.guards';
+import { loginDto } from '../dtos/loginDoctor.dto';
 
 @Controller('doctor')
 export class DoctorController {
   constructor(private doctorService: DoctorService) {}
 
-  @Post()
+  @Post('register')
   @UsePipes(new ValidationPipe())
   async addDoctor(@Body() input: RegisterDoctorDto, @Res() res: Response) {
     try {
@@ -39,6 +40,21 @@ export class DoctorController {
       res.status(err.statusCode).send(err);
     }
   }
+
+  @Post('login')
+  @UsePipes(new ValidationPipe())
+  async login(@Body() loginInput: loginDto, @Res() res: Response) {
+    try {
+      const token = await this.doctorService.login(loginInput);
+      const result = { ...response.loggedIn, token };
+      res.status(response.loggedIn.statusCode).send(result);
+    } catch (err) {
+      console.log(err);
+      err = err?.code ? err : errors.internalError;
+      res.status(err.statusCode).send(err);
+    }
+  }
+
   @Delete()
   @UsePipes(new ValidationPipe())
   @Roles(['doctor'])
@@ -53,6 +69,7 @@ export class DoctorController {
       res.status(err.statusCode).send(err);
     }
   }
+
   @Put()
   @Roles(['doctor'])
   @UseGuards(AuthGuards, RolesGuards)
@@ -67,6 +84,7 @@ export class DoctorController {
       res.status(err.statusCode).send(err);
     }
   }
+
   @Get()
   async getDoctor(
     @Query('id') id: string,

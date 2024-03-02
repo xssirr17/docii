@@ -44,6 +44,23 @@ export class DoctorService {
     await this.#prepareRegisterTokens(token, input.mobileNumber);
     return token;
   }
+
+  async login(input) {
+    const { password, mobileNumber } = input;
+    if (await this.#alreadyLoggedInOrNot(mobileNumber)) {
+      throw errors.alreadyLoggedIn;
+    } else {
+      let doctor = await this.doctorModel.findOne({ mobileNumber }).exec();
+      if (!doctor || doctor.password != password) {
+        throw errors.wrongUserOrPass;
+      } else {
+        const token = this.#generateToken({ mobileNumber });
+        await this.#prepareLoginToken(token, mobileNumber);
+        return token;
+      }
+    }
+  }
+
   async delete(input: DeleteDoctorDto) {
     return await this.doctorModel.deleteOne({ id: input.id });
   }
@@ -126,5 +143,19 @@ export class DoctorService {
       this.cacheManager.set(tokenKey, token, this.loginExpirationTime * 1000),
     ];
     await Promise.allSettled(tokenPromises);
+  }
+
+  async #alreadyLoggedInOrNot(mobileNumber) {
+    const tokenKey = `token_${mobileNumber}`;
+    return await this.cacheManager.get(tokenKey);
+  }
+
+  async #prepareLoginToken(token: string, id: string) {
+    const tokenKey = `token_${id}`;
+    await this.cacheManager.set(
+      tokenKey,
+      token,
+      this.loginExpirationTime * 1000,
+    );
   }
 }

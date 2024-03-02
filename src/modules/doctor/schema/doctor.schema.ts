@@ -43,5 +43,8 @@ export class Doctor {
 
   @Prop({ required: true })
   joinAt: Date;
+
+  @Prop({ required: true })
+  password: string;
 }
 export const DoctorSchema = SchemaFactory.createForClass(Doctor);
