@@ -3,7 +3,6 @@ import { Model } from 'mongoose';
 import { Doctor } from '../schema/doctor.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { UpdateDoctorDto } from '../dtos/updateDoctor.dto';
-import { DeleteDoctorDto } from '../dtos/deleteDoctor.dto';
 import errors from 'src/constants/errors';
 import { Category } from 'src/modules/category/schema/category.schema';
 import { v4 as uuidv4 } from 'uuid';
