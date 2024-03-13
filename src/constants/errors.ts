@@ -72,4 +72,9 @@ export default {
     message: 'invalid time',
     statusCode: 400,
   },
+  alreadyReserved: {
+    code: 'alreadyReserved',
+    message: 'already reserved',
+    statusCode: 400,
+  },
 };

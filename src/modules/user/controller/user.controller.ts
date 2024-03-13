@@ -17,6 +17,7 @@ import { loginDto } from '../dtos/login.dto';
 import { RolesGuards } from 'src/guards/roles.guards';
 import { Roles } from 'src/decorators/roles.decorator';
 import { AuthGuards } from 'src/guards/auth.guard';
+import { ReserveDto } from '../dtos/reserve.dto';
 
 @Controller('user')
 export class userController {
@@ -84,6 +85,22 @@ export class userController {
     } catch (err) {
       console.log(err);
       err = err?.code ? err : errors.unauthorized;
+      res.status(err.statusCode).send(err);
+    }
+  }
+
+  @Post('reserve')
+  @Roles(['user'])
+  @UseGuards(AuthGuards, RolesGuards)
+  @UsePipes(new ValidationPipe())
+  async reserve(@Body() input: ReserveDto, @Res() res: Response, @Req() req) {
+    try {
+      const mobileNumber = req.mobileNumber;
+      await this.userService.reserve({ presentId: input.id, mobileNumber });
+      res.status(response.success.statusCode).send(response.success);
+    } catch (err) {
+      console.log(err);
+      err = err?.code ? err : errors.internalError;
       res.status(err.statusCode).send(err);
     }
   }

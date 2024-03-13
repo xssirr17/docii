@@ -8,15 +8,37 @@ import { Cache } from 'cache-manager';
 import errors from 'src/constants/errors';
 import { loginDto } from '../dtos/login.dto';
 import { getTokenPayload } from 'src/helpers/getTokenPayload';
+import { Presents } from 'src/modules/doctor/schema/present.schema';
 
 @Injectable()
 export class userService {
   private loginExpirationTime: number;
   constructor(
     @InjectModel(User.name) private UserModel: Model<User>,
+    @InjectModel(Presents.name) private presentsModel: Model<Presents>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {
     this.loginExpirationTime = 48 * 60 * 60;
+  }
+
+  async reserve({ presentId, mobileNumber }) {
+    const result = await Promise.all([
+      this.UserModel.findOne({ mobileNumber }),
+      this.presentsModel.findOne({ id: presentId }),
+    ]);
+    const userInfo = result[0];
+    const presentInfo = result[1];
+
+    if (!presentInfo || !userInfo) {
+      throw errors.notFound;
+    } else if (presentInfo.patientId) {
+      throw errors.alreadyReserved;
+    } else {
+      await this.presentsModel.updateOne(
+        { id: presentId },
+        { patientId: userInfo.id },
+      );
+    }
   }
 
   async create(userdata): Promise<User> {
