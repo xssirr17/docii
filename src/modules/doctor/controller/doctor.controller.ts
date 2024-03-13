@@ -151,4 +151,21 @@ export class DoctorController {
       res.status(err.statusCode).send(err);
     }
   }
+
+  @Get('present/time')
+  async getPresentTimes(
+    @Query('id') id: string,
+    @Query('date') date: string,
+    @Res() res: Response,
+  ) {
+    try {
+      let result = await this.doctorService.getPresentTimes({ id, date });
+      result = { ...response.success, result };
+      res.status(response.success.statusCode).send(result);
+    } catch (err) {
+      console.log(err);
+      err = err?.code ? err : errors.internalError;
+      res.status(err.statusCode).send(err);
+    }
+  }
 }

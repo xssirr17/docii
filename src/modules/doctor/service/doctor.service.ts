@@ -27,6 +27,18 @@ export class DoctorService {
     this.loginExpirationTime = 48 * 60 * 60;
   }
 
+  async getPresentTimes({ id, date }) {
+    try {
+      const startDate = new Date(date);
+      const endDate = new Date(`${date} 23:59`);
+      const times = await this.presentsModel.find({
+        time: { $gte: startDate, $lt: endDate },
+      });
+      return this.#getTimesFromDate(times);
+    } catch (err) {
+      throw errors.notFound;
+    }
+  }
   async setpresents(input: PresentsDto) {
     const { doctorId, date, times } = input;
     const fullTimes = this.#generatePresentsTimes(date, times);
@@ -104,6 +116,23 @@ export class DoctorService {
     } catch (err) {
       throw errors.invalidTime;
     }
+  }
+
+  #getTimesFromDate(data) {
+    return data.map((present) => {
+      const time = present.time;
+      return {
+        time: this.#getFormattedTime(time),
+        reserved: present.patientId ? 1 : 0,
+      };
+    });
+  }
+
+  #getFormattedTime(date = new Date()) {
+    const hour = date.getHours();
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const formattedHour = hour % 12 || 12;
+    return `${formattedHour}:${minutes}`;
   }
 
   async #savePresentTimes(time, doctorId) {
