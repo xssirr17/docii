@@ -8,7 +8,4 @@ export class PresentsDto {
 
   @IsNotEmpty()
   times: string[];
-
-  @IsNotEmpty()
-  doctorId: string;
 }

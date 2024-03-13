@@ -141,9 +141,14 @@ export class DoctorController {
   @Roles(['doctor'])
   @UseGuards(AuthGuards, RolesGuards)
   @UsePipes(new ValidationPipe())
-  async setPresentsTime(@Body() input: PresentsDto, @Res() res: Response) {
+  async setPresentsTime(
+    @Body() input: PresentsDto,
+    @Res() res: Response,
+    @Req() req,
+  ) {
     try {
-      await this.doctorService.setpresents(input);
+      const mobileNumber = req.mobileNumber;
+      await this.doctorService.setpresents({ ...input, mobileNumber });
       res.status(response.success.statusCode).send(response.success);
     } catch (err) {
       console.log(err);

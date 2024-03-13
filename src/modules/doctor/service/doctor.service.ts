@@ -39,15 +39,15 @@ export class DoctorService {
       throw errors.notFound;
     }
   }
-  async setpresents(input: PresentsDto) {
-    const { doctorId, date, times } = input;
+  async setpresents(input) {
+    const { mobileNumber, date, times } = input;
     const fullTimes = this.#generatePresentsTimes(date, times);
     const doctorInfo = await this.doctorModel.findOne({
-      id: doctorId,
+      mobileNumber,
     });
     this.#validatePresentRanges(fullTimes, doctorInfo.rangeOfBetweenPresent);
     const datePresentspromises = fullTimes.map((time) => {
-      return this.#savePresentTimes(time, doctorId);
+      return this.#savePresentTimes(time, doctorInfo.id);
     });
 
     await Promise.all(datePresentspromises);
@@ -124,6 +124,7 @@ export class DoctorService {
       return {
         time: this.#getFormattedTime(time),
         reserved: present.patientId ? 1 : 0,
+        id: present.id,
       };
     });
   }
