@@ -67,4 +67,9 @@ export default {
     message: 'category not found',
     statusCode: 404,
   },
+  invalidTime: {
+    code: 'invalidTime',
+    message: 'invalid time',
+    statusCode: 400,
+  },
 };

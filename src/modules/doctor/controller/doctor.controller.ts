@@ -23,6 +23,7 @@ import { AuthGuards } from 'src/guards/auth.guard';
 import { RolesGuards } from 'src/guards/roles.guards';
 import { loginDto } from '../dtos/loginDoctor.dto';
 import { RegisterPresentDto } from '../dtos/registerPresent.dto';
+import { PresentsDto } from '../dtos/presents.dt';
 
 @Controller('doctor')
 export class DoctorController {
@@ -56,7 +57,7 @@ export class DoctorController {
     }
   }
 
-  @Post('present')
+  @Post('present/setting')
   @Roles(['doctor'])
   @UseGuards(AuthGuards, RolesGuards)
   @UsePipes(new ValidationPipe())
@@ -129,6 +130,21 @@ export class DoctorController {
       });
       result = { ...response.success, result };
       res.status(response.success.statusCode).send(result);
+    } catch (err) {
+      console.log(err);
+      err = err?.code ? err : errors.internalError;
+      res.status(err.statusCode).send(err);
+    }
+  }
+
+  @Post('present/time')
+  @Roles(['doctor'])
+  @UseGuards(AuthGuards, RolesGuards)
+  @UsePipes(new ValidationPipe())
+  async setPresentsTime(@Body() input: PresentsDto, @Res() res: Response) {
+    try {
+      await this.doctorService.setpresents(input);
+      res.status(response.success.statusCode).send(response.success);
     } catch (err) {
       console.log(err);
       err = err?.code ? err : errors.internalError;

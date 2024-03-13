@@ -9,6 +9,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { generateToken } from 'src/helpers/generateToken';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { PresentsDto } from '../dtos/presents.dt';
+import { Presents } from '../schema/present.schema';
 
 @Injectable()
 export class DoctorService {
@@ -18,10 +20,25 @@ export class DoctorService {
   constructor(
     @InjectModel(Doctor.name) private doctorModel: Model<Doctor>,
     @InjectModel(Category.name) private categoryModel: Model<Category>,
+    @InjectModel(Presents.name) private presentsModel: Model<Presents>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {
     this.pageLimit = 10;
     this.loginExpirationTime = 48 * 60 * 60;
+  }
+
+  async setpresents(input: PresentsDto) {
+    const { doctorId, date, times } = input;
+    const fullTimes = this.#generatePresentsTimes(date, times);
+    const doctorInfo = await this.doctorModel.findOne({
+      id: doctorId,
+    });
+    this.#validatePresentRanges(fullTimes, doctorInfo.rangeOfBetweenPresent);
+    const datePresentspromises = fullTimes.map((time) => {
+      return this.#savePresentTimes(time, doctorId);
+    });
+
+    await Promise.all(datePresentspromises);
   }
 
   async create(input) {
@@ -39,7 +56,7 @@ export class DoctorService {
     doctorInfo.presentUntil = date;
     doctorInfo.rangeOfBetweenPresent = 0;
     const doctorModel = new this.doctorModel(doctorInfo);
-    doctorModel.save();
+    await doctorModel.save();
     const token = this.#generateToken({
       mobileNumber: input.mobileNumber,
     });
@@ -78,6 +95,35 @@ export class DoctorService {
       return await this.#getById(id);
     } else {
       return await this.#getAll({ page, sortBy, sortType });
+    }
+  }
+
+  #generatePresentsTimes(date: Date, times: string[]) {
+    try {
+      return times.map((time) => new Date(`${date} ${time}`).toString());
+    } catch (err) {
+      throw errors.invalidTime;
+    }
+  }
+
+  async #savePresentTimes(time, doctorId) {
+    const presentModelInfo = {
+      doctorId,
+      time,
+      id: uuidv4(),
+    };
+    const presentsModel = new this.presentsModel(presentModelInfo);
+    await presentsModel.save();
+  }
+
+  #validatePresentRanges(times, range) {
+    range = range * 60 * 1000;
+    for (let i = 0; i < times.length - 1; i++) {
+      const cur = new Date(times[i]).getTime();
+      const next = new Date(times[i + 1]).getTime();
+      if (next - cur != range) {
+        throw errors.invalidTime;
+      }
     }
   }
 
