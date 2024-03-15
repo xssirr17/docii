@@ -15,7 +15,7 @@ export class RatelimitMiddleware implements NestMiddleware {
   private rateLimitPerTtl: number;
   constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {
     this.rateLimitTtl = 60 * 1000;
-    this.rateLimitPerTtl = 15;
+    this.rateLimitPerTtl = 30;
   }
   async use(req: Request, res: Response, next: NextFunction) {
     const { ip } = req;
