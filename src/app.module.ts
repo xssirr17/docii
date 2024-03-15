@@ -10,6 +10,8 @@ import { RatelimitMiddleware } from './middlewares/ratelimit/ratelimit.middlewar
 import { CategoryModule } from './modules/category/category.module';
 import { DoctorModule } from './modules/doctor/doctor.module';
 import { FilesModule } from './modules/files/files.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -22,13 +24,17 @@ import { FilesModule } from './modules/files/files.module';
     CategoryModule,
     DoctorModule,
     FilesModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'), // Adjust path as needed
+    }),
   ],
   controllers: [],
   providers: [],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AccessControlMiddleware, RatelimitMiddleware).forRoutes('/');
+    // consumer.apply(AccessControlMiddleware, RatelimitMiddleware).forRoutes('/');
+    consumer.apply(RatelimitMiddleware).forRoutes('/');
   }
 }
   
